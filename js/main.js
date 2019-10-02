@@ -13,6 +13,8 @@ var TIMES = ['12:00', '13:00', '14:00'];
 var GOODS = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
 var mapElement = document.querySelector('.map');
+var mapPinsElement = document.querySelector('.map__pins');
+var adTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 var showMap = function () {
   mapElement.classList.remove('map--faded');
@@ -28,7 +30,7 @@ var getAd = function (index) {
 
   return {
     author: {
-      avatar: 'img/avatars/user' + (index + 1) + '.png'
+      avatar: 'img/avatars/user0' + (index + 1) + '.png'
     },
     offer: {
       title: TITLES[getRandomFromRange(0, TITLES.length)],
@@ -60,10 +62,29 @@ var generateAds = function () {
   return ads;
 };
 
+var renderAds = function (ads) {
+  var fragment = document.createDocumentFragment();
+
+  ads.forEach(function (ad) {
+    var adElement = adTemplate.cloneNode(true);
+
+    adElement.style.left = ad.location.x + 'px';
+    adElement.style.top = ad.location.y + 'px';
+
+    var imgElement = adElement.querySelector('img');
+    imgElement.src = ad.author.avatar;
+    imgElement.alt = ad.title;
+
+    fragment.appendChild(adElement);
+  });
+
+  mapPinsElement.appendChild(fragment);
+};
+
 var init = function () {
   showMap();
   var ads = generateAds();
-  console.log('ads', ads);
+  renderAds(ads);
 };
 
 init();
